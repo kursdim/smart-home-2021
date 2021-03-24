@@ -17,7 +17,6 @@ public class DoorEventProcessor implements EventProcessor {
             }
         });
     }
-
     private void updateDoorState(SensorEventType EventType, Door doorToUpdate) {
         if (EventType == DOOR_OPEN) {
             doorToUpdate.setOpen(true);
