@@ -5,14 +5,11 @@ import static ru.sbt.mipt.oop.SensorEventType.*;
 public class DoorEventProcessor implements EventProcessor {
     @Override
     public void processEvent(SensorEvent event, SmartHome smartHome){
-        smartHome.execute(new Action() {
-            @Override
-            public void act(PartOfTheHome partOfTheHome) {
-                if (partOfTheHome instanceof Door) {
-                    Door doorToUpdate = (Door) partOfTheHome;
-                    if (doorToUpdate.getId().equals(event.getObjectId())) {
-                        updateDoorState(event.getType(), doorToUpdate);
-                    }
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Door) {
+                Door doorToUpdate = (Door) partOfTheHome;
+                if (doorToUpdate.getId().equals(event.getObjectId())) {
+                    updateDoorState(event.getType(), doorToUpdate);
                 }
             }
         });

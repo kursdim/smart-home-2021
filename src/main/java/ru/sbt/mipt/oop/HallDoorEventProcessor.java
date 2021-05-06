@@ -11,31 +11,37 @@ public class HallDoorEventProcessor implements EventProcessor {
 
     @Override
     public void processEvent(SensorEvent event, SmartHome smartHome) {
-        smartHome.execute(new Action() {
-            @Override
-            public void act(PartOfTheHome partOfTheHome) {
-                if (partOfTheHome instanceof Door) {
-                    Door door = (Door) partOfTheHome;
-                    if (door.getId().equals(event.getObjectId())) {
-                        if (HomeUtils.isDoorInHallRoom(door.getId(), smartHome) && event.getType() == DOOR_CLOSED) {
-                            turnAllLightsOff(smartHome);
-                        }
-                    }
+        if (event.getType() != DOOR_CLOSED) {
+            return;
+        }
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Room) {
+                Room room = (Room) partOfTheHome;
+                if (room.getName().equals("hall")) {
+                    checkIfThereIsTheDoorWithNeededIdAndTurnAllLightsOff(event.getObjectId(), smartHome);
+                }
+            }
+        });
+    }
+
+    private void checkIfThereIsTheDoorWithNeededIdAndTurnAllLightsOff(String doorId, SmartHome smartHome) {
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Door) {
+                Door door = (Door) partOfTheHome;
+                if (door.getId().equals(doorId)) {
+                    turnAllLightsOff(smartHome);
                 }
             }
         });
     }
 
     private void turnAllLightsOff(SmartHome smartHome) {
-        smartHome.execute(new Action() {
-            @Override
-            public void act(PartOfTheHome partOfTheHome) {
-                if (partOfTheHome instanceof Light) {
-                    Light lightToUpdate = (Light) partOfTheHome;
-                    lightToUpdate.setOn(false);
-                    SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, lightToUpdate.getId());
-                    commandSender.sendCommand(command);
-                }
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Light) {
+                Light lightToUpdate = (Light) partOfTheHome;
+                lightToUpdate.setOn(false);
+                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, lightToUpdate.getId());
+                commandSender.sendCommand(command);
             }
         });
     }
