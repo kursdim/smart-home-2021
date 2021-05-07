@@ -2,7 +2,7 @@ package ru.sbt.mipt.oop;
 
 import static ru.sbt.mipt.oop.SensorEventType.DOOR_CLOSED;
 
-public class HallDoorEventProcessor implements EventProcessor{
+public class HallDoorEventProcessor implements EventProcessor {
     private final CommandSender commandSender;
 
     public HallDoorEventProcessor(CommandSender commandSender) {
@@ -14,31 +14,35 @@ public class HallDoorEventProcessor implements EventProcessor{
         if (event.getType() != DOOR_CLOSED) {
             return;
         }
-        if (isClosedDoorInHallRoom(event.getObjectId(), smartHome)){
-            switchOffAllLights(smartHome);
-        }
-    }
-
-    private boolean isClosedDoorInHallRoom(String doorId, SmartHome smartHome) {
-        for (Room room : smartHome.getRooms()) {
-            for (Door door : room.getDoors()) {
-                if (door.getId().equals(doorId)) {
-                    if (room.getName().equals("hall")){
-                        return true;
-                    }
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Room) {
+                Room room = (Room) partOfTheHome;
+                if (room.getName().equals("hall")) {
+                    checkIfThereIsTheDoorWithNeededIdAndTurnAllLightsOff(event.getObjectId(), smartHome);
                 }
             }
-        }
-        return false;
+        });
     }
 
-    private void switchOffAllLights(SmartHome smartHome){
-        for (Room homeRoom : smartHome.getRooms()) {
-            for (Light light : homeRoom.getLights()) {
-                light.setOn(false);
-                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
+    private void checkIfThereIsTheDoorWithNeededIdAndTurnAllLightsOff(String doorId, SmartHome smartHome) {
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Door) {
+                Door door = (Door) partOfTheHome;
+                if (door.getId().equals(doorId)) {
+                    turnAllLightsOff(smartHome);
+                }
+            }
+        });
+    }
+
+    private void turnAllLightsOff(SmartHome smartHome) {
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Light) {
+                Light lightToUpdate = (Light) partOfTheHome;
+                lightToUpdate.setOn(false);
+                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, lightToUpdate.getId());
                 commandSender.sendCommand(command);
             }
-        }
+        });
     }
 }
