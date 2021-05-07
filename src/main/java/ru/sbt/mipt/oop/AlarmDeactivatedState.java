@@ -8,14 +8,14 @@ public class AlarmDeactivatedState implements AlarmState {
     }
 
     @Override
-    public void Activate(int code) {
-        alarm.changeAlarmState(new AlarmActivatedState(alarm));
-        alarm.Activate(code);
+    public void activate(int code) {
+        if (alarm.isCorrectCode(code)) {
+            alarm.changeAlarmState(new AlarmActivatedState(alarm));
+        }
     }
 
     @Override
-    public void Deactivate(int code) {
-
+    public void deactivate(int code) {
     }
 
     @Override
@@ -24,7 +24,7 @@ public class AlarmDeactivatedState implements AlarmState {
     }
 
     @Override
-    public AlarmStateEnum getState() {
-        return AlarmStateEnum.DEACTIVATED;
+    public void react(AlarmReactor alarmReactor) {
+        alarmReactor.onAlarmDeactivatedState();
     }
 }

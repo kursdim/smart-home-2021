@@ -1,7 +1,6 @@
 package ru.sbt.mipt.oop;
 
 public class AlarmActivatedState implements AlarmState {
-    private int code;
     private final Alarm alarm;
 
     public AlarmActivatedState(Alarm alarm) {
@@ -9,15 +8,13 @@ public class AlarmActivatedState implements AlarmState {
     }
 
     @Override
-    public void Activate(int code) {
-        this.code = code;
-        alarm.changeAlarmState(this);
+    public void activate(int code) {
     }
 
     @Override
-    public void Deactivate(int code) {
-        if (this.code != code) {
-            alarm.changeAlarmState(new AlarmAlarmingState());
+    public void deactivate(int code) {
+        if (!alarm.isCorrectCode(code)) {
+            startAlarm();
         } else {
             alarm.changeAlarmState(new AlarmDeactivatedState(alarm));
         }
@@ -25,11 +22,11 @@ public class AlarmActivatedState implements AlarmState {
 
     @Override
     public void startAlarm() {
-        alarm.changeAlarmState(new AlarmAlarmingState());
+        alarm.changeAlarmState(new AlarmAlarmingState(alarm));
     }
 
     @Override
-    public AlarmStateEnum getState() {
-        return AlarmStateEnum.ACTIVATED;
+    public void react(AlarmReactor alarmReactor) {
+        alarmReactor.onAlarmActivatedState();
     }
 }

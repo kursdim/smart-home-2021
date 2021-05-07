@@ -1,11 +1,11 @@
 package ru.sbt.mipt.oop;
 
 public interface AlarmState {
-     void Activate(int code);
+     void activate(int code);
 
-     void Deactivate(int code);
+     void deactivate(int code);
 
      void startAlarm();
 
-    AlarmStateEnum getState();
+     void react(AlarmReactor alarmReactor);
 }
