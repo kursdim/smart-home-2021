@@ -16,10 +16,14 @@ public class EventLoopProcessor {
     public void startProcessingEvents (){
         SensorEvent event = sensorEventCreator.getNextSensorEvent();
         while (event != null) {
-            for (EventProcessor eventProcessor: eventProcessors) {
-                eventProcessor.processEvent(event, smartHome);
-            }
+            processEvent(event);
             event = sensorEventCreator.getNextSensorEvent();
+        }
+    }
+
+    private void processEvent(SensorEvent event) {
+        for (EventProcessor eventProcessor: eventProcessors) {
+            eventProcessor.processEvent(event, smartHome);
         }
     }
 }
