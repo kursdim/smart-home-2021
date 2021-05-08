@@ -5,14 +5,11 @@ import static ru.sbt.mipt.oop.SensorEventType.LIGHT_ON;
 public class LightEventProcessor implements EventProcessor {
     @Override
     public void processEvent(SensorEvent event, SmartHome smartHome){
-        smartHome.execute(new Action() {
-            @Override
-            public void act(PartOfTheHome partOfTheHome) {
-                if (partOfTheHome instanceof Light) {
-                    Light lightToUpdate = (Light) partOfTheHome;
-                    if (lightToUpdate.getId().equals(event.getObjectId())) {
-                        updateLightState(event.getType(), lightToUpdate);
-                    }
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Light) {
+                Light lightToUpdate = (Light) partOfTheHome;
+                if (lightToUpdate.getId().equals(event.getObjectId())) {
+                    updateLightState(event.getType(), lightToUpdate);
                 }
             }
         });

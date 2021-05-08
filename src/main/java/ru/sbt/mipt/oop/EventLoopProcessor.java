@@ -27,12 +27,6 @@ public class EventLoopProcessor {
 
     private void processEvent(SensorEvent event) {
         for (EventProcessor eventProcessor: eventProcessors) {
-            if (smartHome.alarm.getState() == AlarmStateEnum.ACTIVATED){
-                eventProcessor = new AlarmActivatedDecorator(eventProcessor);
-            }
-            if (smartHome.alarm.getState() == AlarmStateEnum.ALARMING){
-                eventProcessor = new AlarmAlarmingDecorator();
-            }
             eventProcessor.processEvent(event, smartHome);
         }
     }
