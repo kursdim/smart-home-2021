@@ -3,21 +3,24 @@ package ru.sbt.mipt.oop;
 import rc.RemoteControl;
 import ru.sbt.mipt.oop.commands.Command;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class RemoteControlImpl implements RemoteControl {
-    private HashMap<String, Command> fromButtonsToCommandsMap;
+    private Map<String, Command> fromButtonsToCommandsMap;
 
-    public RemoteControlImpl(HashMap<String, Command> fromButtonsToCommandsMap) {
+    public RemoteControlImpl(Map<String, Command> fromButtonsToCommandsMap) {
         this.fromButtonsToCommandsMap = fromButtonsToCommandsMap;
     }
 
     @Override
     public void onButtonPressed(String buttonCode) {
-        fromButtonsToCommandsMap.get(buttonCode).execute();
+        Command command = fromButtonsToCommandsMap.get(buttonCode);
+        if (command != null) {
+            command.execute();
+        }
     }
 
-    public void setCommands(HashMap<String, Command> fromButtonsToCommandsMap) {
+    public void setCommands(Map<String, Command> fromButtonsToCommandsMap) {
         this.fromButtonsToCommandsMap = fromButtonsToCommandsMap;
     }
 }

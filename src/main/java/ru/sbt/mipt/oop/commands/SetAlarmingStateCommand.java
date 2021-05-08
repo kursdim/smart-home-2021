@@ -13,7 +13,6 @@ public class SetAlarmingStateCommand implements Command {
 
     @Override
     public void execute() {
-        AlarmState alarmActivatedState = new AlarmActivatedState(alarm);
-        alarmActivatedState.startAlarm();
+        alarm.startAlarm();
     }
 }

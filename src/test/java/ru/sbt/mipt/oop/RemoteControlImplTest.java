@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.sbt.mipt.oop.AlarmStateEnum.ACTIVATED;
-import static ru.sbt.mipt.oop.AlarmStateEnum.ALARMING;
 
 class RemoteControlImplTest {
     @Test
@@ -26,22 +24,22 @@ class RemoteControlImplTest {
         Room room2 = new Room(Arrays.asList(light4, light5, light6), Collections.singletonList(door), "hall");
         Room room3 = new Room(Collections.singletonList(light7), Collections.emptyList(), "corridor");
         SmartHome smartHome = new SmartHome(Arrays.asList(room1, room2, room3));
-        Alarm alarm = new Alarm();
+        Alarm alarm = new Alarm(1234);
         smartHome.setAlarm(alarm);
 
         HashMap<String, Command> fromButtonsToCommandsMap = new HashMap<>();
-        fromButtonsToCommandsMap.put("A", new AlarmActivateCommand(smartHome));
+        fromButtonsToCommandsMap.put("A", new AlarmActivateCommand(alarm, 1234));
         fromButtonsToCommandsMap.put("B", new CloseHallDoorCommand(smartHome));
         fromButtonsToCommandsMap.put("C", new SetAlarmingStateCommand(alarm));
         fromButtonsToCommandsMap.put("D", new TurnAllTheLightsOffCommand(smartHome));
         fromButtonsToCommandsMap.put("1", new TurnAllTheLightsOnCommand(smartHome));
         fromButtonsToCommandsMap.put("2", new TurnOnTheCorridorLightCommand(smartHome));
-        fromButtonsToCommandsMap.put("3", new AlarmActivateCommand(smartHome));
+        fromButtonsToCommandsMap.put("3", new AlarmActivateCommand(alarm, 1234));
         fromButtonsToCommandsMap.put("4", new CloseHallDoorCommand(smartHome));
         RemoteControlImpl remoteControl = new RemoteControlImpl(fromButtonsToCommandsMap);
 
         remoteControl.onButtonPressed("A");
-        assertSame(alarm.getState(), ACTIVATED);
+        assertTrue(alarm.isActivated());
 
         remoteControl.onButtonPressed("1");
         assertTrue(light1.isOn());
@@ -74,6 +72,6 @@ class RemoteControlImplTest {
         assertFalse(light6.isOn());
 
         remoteControl.onButtonPressed("C");
-        assertSame(alarm.getState(), ALARMING);
+        assertTrue(alarm.isAlarming());
     }
 }

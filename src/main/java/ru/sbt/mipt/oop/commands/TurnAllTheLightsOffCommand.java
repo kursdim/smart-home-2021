@@ -14,13 +14,10 @@ public class TurnAllTheLightsOffCommand implements Command {
 
     @Override
     public void execute() {
-        smartHome.execute(new Action() {
-            @Override
-            public void act(PartOfTheHome partOfTheHome) {
-                if (partOfTheHome instanceof Light) {
-                    Light lightToUpdate = (Light) partOfTheHome;
-                    lightToUpdate.setOn(false);
-                }
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Light) {
+                Light lightToUpdate = (Light) partOfTheHome;
+                lightToUpdate.setOn(false);
             }
         });
     }

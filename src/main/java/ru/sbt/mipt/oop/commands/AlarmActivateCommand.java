@@ -1,21 +1,18 @@
 package ru.sbt.mipt.oop.commands;
 
-import ru.sbt.mipt.oop.AlarmEventProcessor;
-import ru.sbt.mipt.oop.SensorEvent;
-import ru.sbt.mipt.oop.SensorEventType;
-import ru.sbt.mipt.oop.SmartHome;
+import ru.sbt.mipt.oop.*;
 
 public class AlarmActivateCommand implements Command {
-    SmartHome smartHome;
+    Alarm alarm;
+    int code;
 
-    public AlarmActivateCommand(SmartHome smartHome) {
-        this.smartHome = smartHome;
+    public AlarmActivateCommand(Alarm alarm, int code) {
+        this.alarm = alarm;
+        this.code = code;
     }
 
     @Override
     public void execute() {
-        SensorEvent alarmActivateEvent = new SensorEvent(SensorEventType.ALARM_ACTIVATE, 1234);
-        AlarmEventProcessor alarmEventProcessor = new AlarmEventProcessor();
-        alarmEventProcessor.processEvent(alarmActivateEvent, smartHome);
+        alarm.activate(code);
     }
 }

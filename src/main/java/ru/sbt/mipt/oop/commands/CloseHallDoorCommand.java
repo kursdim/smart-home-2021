@@ -11,18 +11,34 @@ public class CloseHallDoorCommand implements Command {
 
     @Override
     public void execute() {
-        smartHome.execute(new Action() {
-            @Override
-            public void act(PartOfTheHome partOfTheHome) {
-                if (partOfTheHome instanceof Door) {
-                    Door doorToUpdate = (Door) partOfTheHome;
-                    if (HomeUtils.isDoorInHallRoom(doorToUpdate.getId(), smartHome)) {
-                        doorToUpdate.setOpen(false);
-                    }
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Room) {
+                Room room = (Room) partOfTheHome;
+                if (room.getName().equals("hall")) {
+                    closeHallDoor();
                 }
             }
         });
-        Command turnAllTheLightsOffCommand = new TurnAllTheLightsOffCommand(smartHome);
-        turnAllTheLightsOffCommand.execute();
+    }
+
+    private void closeHallDoor() {
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Door) {
+                Door door = (Door) partOfTheHome;
+                door.setOpen(false);
+                turnAllLightsOff(smartHome);
+            }
+        });
+    }
+
+    private void turnAllLightsOff(SmartHome smartHome) {
+        smartHome.execute(partOfTheHome -> {
+            if (partOfTheHome instanceof Light) {
+                Light lightToUpdate = (Light) partOfTheHome;
+                lightToUpdate.setOn(false);
+                SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, lightToUpdate.getId());
+                (new SimpleCommandSender()).sendCommand(command);
+            }
+        });
     }
 }

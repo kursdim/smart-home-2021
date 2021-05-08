@@ -4,16 +4,13 @@ import org.junit.jupiter.api.Test;
 import ru.sbt.mipt.oop.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.sbt.mipt.oop.AlarmStateEnum.ACTIVATED;
 
 class AlarmActivateCommandTest {
     @Test
     public void testAlarmIsActivatedAfterAlarmActivateCommand() {
-        SmartHome smartHome = new SmartHome();
-        Alarm alarm = new Alarm();
-        smartHome.setAlarm(alarm);
-        Command alarmActivateCommand = new AlarmActivateCommand(smartHome);
+        Alarm alarm = new Alarm(1234);
+        Command alarmActivateCommand = new AlarmActivateCommand(alarm, 1234);
         alarmActivateCommand.execute();
-        assertSame(alarm.getState(), ACTIVATED);
+        assertTrue(alarm.isActivated());
     }
 }
