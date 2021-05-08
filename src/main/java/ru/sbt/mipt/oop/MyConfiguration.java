@@ -11,6 +11,11 @@ import java.util.Map;
 @Configuration
 public class MyConfiguration {
     @Bean
+    CommandSender simpleCommandSender() {
+        return new SimpleCommandSender();
+    }
+
+    @Bean
     SmartHome smartHome() {
         return (new JsonSmartHomeReader("smart-home-1.js")).readSmartHome();
     }
@@ -32,7 +37,7 @@ public class MyConfiguration {
 
     @Bean
     EventProcessor hallDoorEventProcessor() {
-        return new HallDoorEventProcessor(new SimpleCommandSender());
+        return new HallDoorEventProcessor(simpleCommandSender());
     }
 
     @Bean
